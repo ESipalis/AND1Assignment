@@ -37,7 +37,8 @@
                     android:layout_alignParentEnd="true"
                     android:background="@color/fui_transparent"
                     android:text="@string/sign_out"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:onClick="signOutButtonClicked"/>
             </RelativeLayout>
 
         </LinearLayout>
