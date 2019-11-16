@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "230669870343",
+    "firebase_url": "https://andassignment-c0648.firebaseio.com",
+    "project_id": "andassignment-c0648",
+    "storage_bucket": "andassignment-c0648.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230669870343:android:f57df2acb46635f7f111a2",
+        "android_client_info": {
+          "package_name": "com.example.andassignment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230669870343-6rl5hqdlesm6qr05p8c8utdbhaaio695.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.andassignment",
+            "certificate_hash": "549ba936d6da178c06af02a9068be7cf7e049127"
+          }
+        },
+        {
+          "client_id": "230669870343-4gi4pdtvm2s93lhdpes0l5gf5164j3vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-BJWPfD4vCMhN-9NEno0b92NbTbxv8ec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230669870343-4gi4pdtvm2s93lhdpes0l5gf5164j3vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
