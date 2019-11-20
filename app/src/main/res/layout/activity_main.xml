@@ -49,13 +49,13 @@
     <include layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="@dimen/fab_margin"
         app:backgroundTint="#4CAF50"
         app:maxImageSize="50dp"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        android:onClick="addButtonClicked"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
