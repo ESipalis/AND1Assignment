@@ -1,21 +1,28 @@
-package com.example.andassignment;
+package com.example.andassignment.ui.addpokemon;
+
+import androidx.appcompat.app.AlertDialog;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
+import com.example.andassignment.PokemonRepository;
+import com.example.andassignment.R;
 import com.example.andassignment.api.ApiServiceFactory;
 import com.example.andassignment.api.PokemonDto;
 import com.example.andassignment.model.Pokemon;
@@ -26,33 +33,54 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PokemonAddActivity extends AppCompatActivity {
+public class AddPokemonFragment extends Fragment {
 
     private EditText editTextFindPokemonNameOrId;
+    private Button buttonFindPokemon;
     private LinearLayout foundPokemonContainer;
 
     private ImageView imageViewFoundPokemonImage;
     private TextView textViewFoundPokemonName;
     private EditText editTextCustomPokemonName;
+    private Button buttonAddPokemon;
 
     private Pokemon foundPokemon;
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
-        setContentView(R.layout.pokemon_add);
+        View view = inflater.inflate(R.layout.fragment_add_pokemon, container, false);
 
-        editTextFindPokemonNameOrId = findViewById(R.id.editTextFindPokemonNameOrId);
-        foundPokemonContainer = findViewById(R.id.foundPokemonContainer);
-        imageViewFoundPokemonImage = findViewById(R.id.imageViewFoundPokemonImage);
-        textViewFoundPokemonName = findViewById(R.id.textViewFoundPokemonName);
-        editTextCustomPokemonName = findViewById(R.id.editTextCustomPokemonName);
+        editTextFindPokemonNameOrId = view.findViewById(R.id.editTextFindPokemonNameOrId);
+        buttonFindPokemon = view.findViewById(R.id.button_find_pokemon);
+        foundPokemonContainer = view.findViewById(R.id.foundPokemonContainer);
+        imageViewFoundPokemonImage = view.findViewById(R.id.imageViewFoundPokemonImage);
+        textViewFoundPokemonName = view.findViewById(R.id.textViewFoundPokemonName);
+        editTextCustomPokemonName = view.findViewById(R.id.editTextCustomPokemonName);
+        buttonAddPokemon = view.findViewById(R.id.button_add_pokemon);
+
+        buttonFindPokemon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findPokemon(view);
+            }
+        });
+
+        buttonAddPokemon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addPokemon(view);
+            }
+        });
 
         showFoundPokemon(null);
+        return view;
     }
 
-    public void findPokemon(View view) {
+
+    private void findPokemon(final View view) {
         Call<PokemonDto> pokemonCall = ApiServiceFactory.getPokemonApi().getPokemon(editTextFindPokemonNameOrId.getText().toString());
         pokemonCall.enqueue(new Callback<PokemonDto>() {
             @Override
@@ -60,7 +88,7 @@ public class PokemonAddActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     showFoundPokemon(response.body().asPokemon());
                 } else {
-                    new AlertDialog.Builder(getApplicationContext())
+                    new AlertDialog.Builder(getContext().getApplicationContext())
                             .setTitle("Unsuccessful response")
                             .setMessage(response.body() + "")
                             .show();
@@ -69,7 +97,7 @@ public class PokemonAddActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<PokemonDto> call, Throwable t) {
-                new AlertDialog.Builder(getApplicationContext())
+                new AlertDialog.Builder(getContext().getApplicationContext())
                         .setTitle("Error occurred")
                         .setMessage(t.getMessage())
                         .show();
@@ -86,11 +114,7 @@ public class PokemonAddActivity extends AppCompatActivity {
         }
 
 
-        View currentView = getCurrentFocus();
-        if (currentView != null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(currentView.getWindowToken(), 0);
-        }
+        hideKeyboard();
         editTextFindPokemonNameOrId.clearFocus();
         editTextFindPokemonNameOrId.setText(null);
         foundPokemonContainer.setVisibility(View.VISIBLE);
@@ -98,21 +122,31 @@ public class PokemonAddActivity extends AppCompatActivity {
         Glide.with(this).load(pokemon.getImageUrl()).into(imageViewFoundPokemonImage);
     }
 
-    public void addPokemon(View view) {
+    private void hideKeyboard() {
+        View currentView = getView();
+        if (currentView != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(currentView.getWindowToken(), 0);
+        }
+    }
+
+    private void addPokemon(View view) {
         foundPokemon.setCustomName(editTextCustomPokemonName.getText().toString());
         PokemonRepository.INSTANCE.addPokemon(foundPokemon)
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         showFoundPokemon(null);
-                        Toast.makeText(PokemonAddActivity.this, "Pokemon added successfully", Toast.LENGTH_SHORT).show();
+                        hideKeyboard();
+                        Toast.makeText(getContext(), "Pokemon added successfully", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(this, new OnFailureListener() {
+                .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(PokemonAddActivity.this, "An error occurred while trying to add new pokemon", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "An error occurred while trying to add new pokemon", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 }

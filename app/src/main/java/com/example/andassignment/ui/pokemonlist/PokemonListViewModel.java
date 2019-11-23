@@ -1,5 +1,6 @@
-package com.example.andassignment;
+package com.example.andassignment.ui.pokemonlist;
 
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,9 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.andassignment.PokemonRepository;
+import com.example.andassignment.PokemonViewHolder;
+import com.example.andassignment.R;
 import com.example.andassignment.model.Pokemon;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -17,7 +21,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityViewModel extends ViewModel {
+// I'm not sure this is the best structure, but I couldn't come up with anything better when using FirebaseRecyclerAdapter
+public class PokemonListViewModel extends ViewModel {
 
     private final FirebaseRecyclerAdapter<Pokemon, PokemonViewHolder> adapter;
     private final List<LifecycleOwner> listeners;
@@ -34,7 +39,7 @@ public class MainActivityViewModel extends ViewModel {
     };
 
 
-    public MainActivityViewModel() {
+    public PokemonListViewModel() {
         listeners = new ArrayList<>();
         FirebaseRecyclerOptions<Pokemon> options = new FirebaseRecyclerOptions.Builder<Pokemon>()
                 .setQuery(PokemonRepository.INSTANCE.getPokemonListReference(), Pokemon.class)
@@ -53,6 +58,9 @@ public class MainActivityViewModel extends ViewModel {
             @Override
             protected void onBindViewHolder(@NonNull PokemonViewHolder holder, int position, @NonNull Pokemon model) {
                 holder.setPokemon(model);
+                // Move this outside ViewModel
+                String colorString = position % 2 == 0 ? "#FFFFFF" : "#EEEEEE";
+                holder.itemView.setBackgroundColor(Color.parseColor(colorString));
             }
         };
     }
@@ -83,5 +91,4 @@ public class MainActivityViewModel extends ViewModel {
             this.handler.postDelayed(stopAdapterListeningRunnable, STOP_LISTENING_DELAY_MS);
         }
     }
-
 }

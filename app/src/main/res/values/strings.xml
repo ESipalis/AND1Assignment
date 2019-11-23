@@ -1,8 +1,29 @@
 <resources>
-    <string name="app_name">ANDAssignment</string>
+    <string name="app_name">Pokemon catcher 3000</string>
+
+    <string name="action_sign_out">Sign out</string>
     <string name="action_settings">Settings</string>
-    <string name="sign_out">SIGN OUT</string>
-    <string name="your_pokemons">YOUR POKEMONS</string>
+
     <string name="pokemon_image_content_description">Pokemon image</string>
     <string name="pokemon_name_text_placeholder">Pokemon Name</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_your_pokemons">Your pokemons</string>
+    <string name="menu_add_pokemon">Add pokemon</string>
+    <string name="catch_pokemon_button_text">Catch</string>
+    <string name="edit_text_custom_pokemon_name">Custom pokemon name</string>
+    <string name="text_view_catch_pokemon_description">You can give your own name to the found pokemon and add it to your collection.</string>
+    <string name="text_view_found_pokemon_name">Found pokemon name</string>
+    <string name="image_view_found_pokemon_image_description">Found pokemon image</string>
+    <string name="button_find_pokemon_text">Find</string>
+    <string name="edit_text_pokemon_name_or_id">Pokemon name or id</string>
+    <string name="button_sign_in_text">SIGN IN</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="setting_favorite_pokemon_text">Favorite Pokemon Name</string>
+    <string name="settings_pokemon_header_text">Pokemon</string>
 </resources>

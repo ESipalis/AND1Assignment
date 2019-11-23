@@ -2,53 +2,59 @@ package com.example.andassignment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.Menu;
+import android.widget.Toast;
+
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewPokemons;
-    private MainActivityViewModel viewModel;
+    private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FirebaseUser user = checkIfSignedIn();
         if (user == null) {
             return;
         }
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-
-        recyclerViewPokemons = findViewById(R.id.recyclerViewPokemons);
-        recyclerViewPokemons.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewPokemons.setAdapter(viewModel.getAdapter());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        viewModel.startListeningToPokemonList(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        viewModel.stopListeningToPokemonList(this);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_pokemon_list, R.id.nav_add_pokemon)
+                .setDrawerLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
     }
 
     private FirebaseUser checkIfSignedIn() {
@@ -62,13 +68,31 @@ public class MainActivity extends AppCompatActivity {
         return user;
     }
 
-    private void startLoginActivity() {
-        startActivity(new Intent(this, SignInActivity.class));
-        finish();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                signOutActionClicked();
+                return true;
+            case R.id.action_settings:
+                settingsActionClicked();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-    public void signOutButtonClicked(View view) {
+    private void settingsActionClicked() {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    private void signOutActionClicked() {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -78,7 +102,17 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void addButtonClicked(View view) {
-        startActivity(new Intent(this, PokemonAddActivity.class));
+    private void startLoginActivity() {
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+
 }
